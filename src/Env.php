@@ -21,13 +21,7 @@ class Env
      */
     function __construct(array $env)
     {
-        foreach ($env as $key => $value) {
-            if (!is_scalar($value)) {
-                throw new \InvalidArgumentException('Environment variables must be scalar values.');
-            }
-
-            $this->env[$key] = $value;
-        }
+        $this->env = $env;
     }
 
     /**
@@ -45,10 +39,10 @@ class Env
      * Returns the value of an environment variable.
      *
      * @param string $key
-     * @param string $default
+     * @param mixed $default
      * @return mixed
      */
-    public function get(string $key, string $default = null)
+    public function get(string $key, $default = null)
     {
         return $this->env[$key] ?? $default;
     }
@@ -57,9 +51,9 @@ class Env
      * Sets the value of an environment variable.
      *
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      */
-    public function set(string $key, string $value)
+    public function set(string $key, $value)
     {
         $this->env[$key] = $value;
     }

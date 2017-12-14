@@ -131,14 +131,25 @@ class Tapegun
             ->merge(new Env($target['env'] ?? []))
             ->merge(new Env($spec['env'] ?? []));
 
+        $cwd = $this->config->getCwd();
+        if (isset($spec['cwd'])) {
+            $cwd = $env->resolve($spec['cwd']);
+        }
+
         if (isset($spec['command'])) {
-            $task = new ExecuteShell($this->output, $env, $this->config->getCwd());
+            $task = new ExecuteShell($this->output, $env, $cwd);
             $task->setCommand($spec['command']);
 
             if (isset($spec['description'])) {
                 $task->setDescription($spec['description']);
             }
 
+            return $task;
+        }
+
+        if (isset($spec['class'])) {
+            $className = str_replace('.', '\\', $spec['class']);
+            $task = new $className($this->output, $env, $cwd);
             return $task;
         }
 

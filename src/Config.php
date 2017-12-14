@@ -30,7 +30,7 @@ class Config
             throw new \InvalidArgumentException('Failed to load file.');
         }
 
-        return new static(realpath($path), $data);
+        return new static(dirname(realpath($path)), $data);
     }
 
     /**

@@ -65,6 +65,22 @@ abstract class AbstractTask
     }
 
     /**
+     * Builds an absolute file path based on the current working
+     * directory and provided relative or absolute path.
+     *
+     * @param string $path
+     * @return string
+     */
+    protected function buildPath(string $path)
+    {
+        if (!empty($path) && $path[0] == '/') {
+            return $path;
+        }
+
+        return $this->cwd . '/' . $path;
+    }
+
+    /**
      * Returns the task description.
      *
      * @return string
