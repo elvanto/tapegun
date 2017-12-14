@@ -1,0 +1,14 @@
+{
+    "name": "elvanto/tapegun",
+    "type": "project",
+    "require": {
+        "symfony/console": "^3.4",
+        "symfony/finder": "^3.4"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Tapegun\\": "src/"
+        }
+    }
+}
