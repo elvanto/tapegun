@@ -49,6 +49,7 @@ class Tapegun
 
         $this->output->writeln(sprintf('Building %s...', $this->config->get('name', '(untitled)')));
 
+        $started = microtime(true);
         foreach ($this->generateTasks() as $task) {
             $this->output->writeln('<comment>======> </comment>' . $task->getDescription());
 
@@ -57,7 +58,8 @@ class Tapegun
             }
         }
 
-        $this->output->writeln('<info>Build completed without error.</info>');
+        $completed = microtime(true);
+        $this->output->writeln(sprintf('<info>Build completed in %.2f seconds without error.</info>', $completed - $started));
     }
 
     /**
