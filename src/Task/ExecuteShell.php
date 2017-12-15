@@ -3,6 +3,7 @@
 namespace Tapegun\Task;
 
 use Tapegun\AbstractTask;
+use Tapegun\Proc;
 
 class ExecuteShell extends AbstractTask
 {
@@ -42,16 +43,14 @@ class ExecuteShell extends AbstractTask
     public function run()
     {
         $command = $this->env->resolve($this->command);
-        $proc = proc_open($command, [1=>['pipe','w'],2=>['pipe','w']], $pipes, $this->cwd);
 
-        foreach ($pipes as $pipe) {
-            if ($content = trim(stream_get_contents($pipe))) {
-                $this->logMessage($content, true);
-            }
+        $proc = new Proc($command, $this->cwd);
+        $status = $proc->close();
 
-            fclose($pipe);
+        if ($content = $proc->getOutput()) {
+            $this->logMessage($content, true);
         }
 
-        return proc_close($proc) === 0;
+        return $status === 0;
     }
 }
