@@ -18,23 +18,43 @@ class ExecuteShell extends AbstractTask
     protected $description = 'Executing shell command';
 
     /**
-     * Sets the shell command.
-     *
-     * @param string $command
+     * @var bool
      */
-    public function setCommand(string $command)
+    private $async = false;
+
+    /**
+     * @var Proc
+     */
+    private $proc;
+
+    /**
+     * Returns the process.
+     *
+     * @return Proc
+     */
+    public function getProc()
     {
-       $this->command = $command;
+        return $this->proc;
     }
 
     /**
-     * Sets the task description.
+     * Configures the command.
      *
+     * @param string $command
      * @param string $description
+     * @param bool $async
      */
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
+    public function configure(
+        string $command,
+        string $description = null,
+        bool $async = false
+    ) {
+        $this->command = $command;
+        $this->async = $async;
+
+        if ($description) {
+            $this->description = $description;
+        }
     }
 
     /**
@@ -44,10 +64,16 @@ class ExecuteShell extends AbstractTask
     {
         $command = $this->env->resolve($this->command);
 
-        $proc = new Proc($command, $this->cwd);
-        $status = $proc->close();
+        $this->proc = new Proc($command, $this->cwd);
 
-        if ($content = $proc->getOutput()) {
+        // Prevent task from blocking
+        if ($this->async) {
+            return true;
+        }
+
+        $status = $this->proc->close();
+
+        if ($content = $this->proc->getOutput()) {
             $this->logMessage($content, true);
         }
 

@@ -98,7 +98,7 @@ class Proc
      *
      * @return int
      */
-    function close()
+    public function close()
     {
         foreach ($this->pipes as $pipe) {
             if ($content = trim(stream_get_contents($pipe))) {

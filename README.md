@@ -91,7 +91,8 @@ An array of tasks to be run once per build target.
 The __command__ property is used to execute a shell command. Environment
 variables surrounded by `{{` and `}}` will be replaced with their corresponding
 values. A custom description can be provided through the __description__
-property.
+property. If __async__ is set to `true`, the task will run asynchronously for
+all targets.
 
 The __class__ property is used to execute a task written in PHP. The namespace
 must be provided, with `.` used as a delimiter.

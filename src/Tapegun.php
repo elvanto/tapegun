@@ -3,6 +3,7 @@
 namespace Tapegun;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Tapegun\Task\ExecuteAsync;
 use Tapegun\Task\ExecuteShell;
 
 class Tapegun
@@ -104,12 +105,33 @@ class Tapegun
         }
 
         // Build target tasks
-        foreach ($this->config->get('targets', []) as $target) {
-            if (in_array($target['name'], $this->targets)) {
-                foreach ($this->config->get('build', []) as $spec) {
-                    $tasks[] = $this->generateTask($spec, $target);
+        foreach ($this->config->get('build', []) as $spec) {
+            $current = [];
+
+            foreach ($this->config->get('targets', []) as $target) {
+                if (in_array($target['name'], $this->targets)) {
+                    $current[$target['name']] = $this->generateTask($spec, $target);
                 }
             }
+
+            if (isset($spec['command'], $spec['async'])) {
+                // Build async group of tasks
+                $task = new ExecuteAsync(
+                    $this->output,
+                    new Env($this->config->get('env', [])),
+                    $this->config->getCwd()
+                );
+
+                foreach ($current as $target => $async) {
+                    $task->addTask($target, $async);
+                }
+
+                $tasks[] = $task;
+            } else {
+                // Merge into existing tasks
+                $tasks = array_merge($tasks, array_keys($current));
+            }
+
         }
 
         // Build post-target tasks
@@ -140,11 +162,11 @@ class Tapegun
 
         if (isset($spec['command'])) {
             $task = new ExecuteShell($this->output, $env, $cwd);
-            $task->setCommand($spec['command']);
-
-            if (isset($spec['description'])) {
-                $task->setDescription($spec['description']);
-            }
+            $task->configure(
+                $spec['command'],
+                $spec['description'] ?? null,
+                $spec['async'] ?? false
+            );
 
             return $task;
         }
