@@ -47,6 +47,7 @@ class Tapegun
         $this->targets = $targets;
 
         $this->validateTargets();
+        $this->locateIncludes();
 
         $this->output->writeln(sprintf('Building %s...', $this->config->get('name', '(untitled)')));
 
@@ -91,6 +92,37 @@ class Tapegun
     }
 
     /**
+     * Loads include files specified in the build configuration.
+     *
+     */
+    public function locateIncludes()
+    {
+        $includes = $this->config->get('includes', []);
+
+        if (!is_array($includes)) {
+            $includes = [$includes];
+        }
+
+        foreach ($includes as $include) {
+            if (empty($include) || !is_string($include)) {
+                throw new \InvalidArgumentException('Includes must be valid file paths.');
+            }
+
+            if (!empty($include) && $include[0] === '/') {
+                $path = $include;
+            } else {
+                $path = $this->config->getCwd() . '/' . $include;
+            }
+
+            if (!is_file($path)) {
+                throw new \InvalidArgumentException($path . ' does not exist.');
+            }
+
+            require_once($path);
+        }
+    }
+
+    /**
      * Generates all tasks defined in the configuration.
      *
      * @return AbstractTask[]
@@ -129,7 +161,7 @@ class Tapegun
                 $tasks[] = $task;
             } else {
                 // Merge into existing tasks
-                $tasks = array_merge($tasks, array_keys($current));
+                $tasks = array_merge($tasks, array_values($current));
             }
 
         }
