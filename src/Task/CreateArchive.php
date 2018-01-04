@@ -32,7 +32,7 @@ class CreateArchive extends AbstractTask
             return false;
         }
 
-        $items = $finder->in($this->buildPath($source));
+        $items = $finder->in($this->buildPath($source))->ignoreDotFiles(false);
         $exclude = $this->env->get('archive:blacklist', []);
 
         foreach ($items as $item) {
