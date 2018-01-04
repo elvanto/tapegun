@@ -36,8 +36,18 @@ class CreateArchive extends AbstractTask
         $exclude = $this->env->get('archive:blacklist', []);
 
         foreach ($items as $item) {
-            if (in_array($item->getRelativePathname(), $exclude)) {
-                continue;
+            foreach ($exclude as $path) {
+                if ($path[strlen($path) - 1] === '/') {
+                    // Test for descendant of directory
+                    if (strpos($item->getRelativePathname(), $path) === 0) {
+                        continue 2;
+                    }
+                } else {
+                    // Test for exact match
+                    if ($item->getRelativePathname() === $path) {
+                        continue 2;
+                    }
+                }
             }
 
             if ($item->isDir()) {
