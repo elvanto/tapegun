@@ -38,8 +38,13 @@ class CreateArchive extends AbstractTask
         foreach ($items as $item) {
             foreach ($exclude as $path) {
                 if ($path[strlen($path) - 1] === '/') {
+                    $pathname = $item->getRelativePathname();
+
+                    if ($item->isDir()) {
+                        $pathname .= '/';
+                    }
                     // Test for descendant of directory
-                    if (strpos($item->getRelativePathname(), $path) === 0) {
+                    if (strpos($pathname, $path) === 0) {
                         continue 2;
                     }
                 } else {
