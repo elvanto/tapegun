@@ -16,12 +16,12 @@ class CreateArchive extends AbstractTask
     {
         $finder = new Finder();
 
-        if (!$source = $this->env->get('archive:source')) {
+        if (!$source = $this->env->resolve('{{archive:source}}')) {
             $this->logError('Missing archive:source environment variable.');
             return false;
         }
 
-        if (!$target = $this->env->get('archive:target')) {
+        if (!$target = $this->env->resolve('{{archive:target}}')) {
             $this->logError('Missing archive:target environment variable.');
             return false;
         }
@@ -43,13 +43,16 @@ class CreateArchive extends AbstractTask
             if ($item->isDir()) {
                 $zip->addEmptyDir($item->getRelativePathname());
             } else {
-                $zip->addFile($item->getRelativePathname());
+                $zip->addFile($item->getPathname(), $item->getRelativePathname());
             }
         }
 
-        $zip->close();
-        $this->logMessage('Created ' . $target, true);
-
-        return true;
+        if ($zip->close()) {
+            $this->logMessage('Created ' . $target, true);
+            return true;
+        } else {
+            $this->logError('Failed to create ' . $target);
+            return false;
+        }
     }
 }

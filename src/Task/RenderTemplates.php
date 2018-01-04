@@ -13,12 +13,12 @@ class RenderTemplates extends AbstractTask
      */
     public function run()
     {
-        if (!$source = $this->env->get('templates:source')) {
+        if (!$source = $this->env->resolve('{{templates:source}}')) {
             $this->logError('Missing templates:source environment variable.');
             return false;
         }
 
-        if (!$target = $this->env->get('templates:target')) {
+        if (!$target = $this->env->resolve('{{templates:target}}')) {
             $this->logError('Missing templates:target environment variable.');
             return false;
         }

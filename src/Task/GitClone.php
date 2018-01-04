@@ -13,12 +13,12 @@ class GitClone extends AbstractTask
      */
     public function run()
     {
-        if (!$source = $this->env->get('git:source')) {
+        if (!$source = $this->env->resolve('{{git:source}}')) {
             $this->logError('Missing git:source environment variable.');
             return false;
         }
 
-        if (!$target = $this->env->get('git:target')) {
+        if (!$target = $this->env->resolve('{{git:target}}')) {
             $this->logError('Missing git:target environment variable.');
             return false;
         }
