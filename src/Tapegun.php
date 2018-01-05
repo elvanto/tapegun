@@ -2,6 +2,8 @@
 
 namespace Tapegun;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tapegun\Task\ExecuteAsync;
 use Tapegun\Task\ExecuteShell;
@@ -11,9 +13,19 @@ class Tapegun
     const VERSION = '1.0';
 
     /**
+     * @var InputInterface
+     */
+    private $input;
+
+    /**
      * @var OutputInterface
      */
     private $output;
+
+    /**
+     * @var QuestionHelper
+     */
+    private $helper;
 
     /**
      * @var Config
@@ -28,11 +40,15 @@ class Tapegun
     /**
      * Tapegun constructor.
      *
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     * @param QuestionHelper  $helper
      */
-    function __construct(OutputInterface $output)
+    function __construct(InputInterface $input, OutputInterface $output, QuestionHelper $helper)
     {
+        $this->input = $input;
         $this->output = $output;
+        $this->helper = $helper;
     }
 
     /**
@@ -149,7 +165,9 @@ class Tapegun
             if (isset($spec['command'], $spec['async'])) {
                 // Build async group of tasks
                 $task = new ExecuteAsync(
+                    $this->input,
                     $this->output,
+                    $this->helper,
                     new Env($this->config->get('env', [])),
                     $this->config->getCwd()
                 );
@@ -193,7 +211,7 @@ class Tapegun
         }
 
         if (isset($spec['command'])) {
-            $task = new ExecuteShell($this->output, $env, $cwd);
+            $task = new ExecuteShell($this->input, $this->output, $this->helper, $env, $cwd);
             $task->configure(
                 $spec['command'],
                 $spec['description'] ?? null,
@@ -205,7 +223,7 @@ class Tapegun
 
         if (isset($spec['class'])) {
             $className = str_replace('.', '\\', $spec['class']);
-            $task = new $className($this->output, $env, $cwd);
+            $task = new $className($this->input, $this->output, $this->helper, $env, $cwd);
             return $task;
         }
 

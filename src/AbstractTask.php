@@ -2,14 +2,27 @@
 
 namespace Tapegun;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 abstract class AbstractTask
 {
     /**
+     * @var InputInterface
+     */
+    private $input;
+
+    /**
      * @var OutputInterface
      */
     private $output;
+
+    /**
+     * @var QuestionHelper
+     */
+    private $helper;
 
     /**
      * @var Env
@@ -29,13 +42,17 @@ abstract class AbstractTask
     /**
      * AbstractTask constructor.
      *
+     * @param InputInterface  $input
      * @param OutputInterface $output
+     * @param QuestionHelper  $helper
      * @param Env             $env
      * @param string          $cwd
      */
-    function __construct(OutputInterface $output, Env $env, string $cwd)
+    function __construct(InputInterface $input, OutputInterface $output, QuestionHelper $helper, Env $env, string $cwd)
     {
+        $this->input = $input;
         $this->output = $output;
+        $this->helper = $helper;
         $this->env = $env;
         $this->cwd = $cwd;
     }
@@ -50,7 +67,7 @@ abstract class AbstractTask
     {
         $this->output->writeln(
             $message,
-            $verbose ? OutputInterface::VERBOSITY_VERBOSE: 0
+            $verbose ? OutputInterface::VERBOSITY_VERBOSE : 0
         );
     }
 
@@ -62,6 +79,18 @@ abstract class AbstractTask
     protected function logError(string $message)
     {
         $this->output->writeln('<error>' . $message . '</error>');
+    }
+
+    /**
+     * Prompts the user and returns the collected input.
+     *
+     * @param string $message
+     * @return mixed
+     */
+    protected function prompt(string $message)
+    {
+        $prompt = new Question($message);
+        return $this->helper->ask($this->input, $this->output, $prompt);
     }
 
     /**
