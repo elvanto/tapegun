@@ -205,6 +205,8 @@ class Tapegun
             ->merge(new Env($target['env'] ?? []))
             ->merge(new Env($spec['env'] ?? []));
 
+        $env->set('BASEPATH', $this->config->getCwd());
+
         $cwd = $this->config->getCwd();
         if (isset($spec['cwd'])) {
             $cwd = $env->resolve($spec['cwd']);
