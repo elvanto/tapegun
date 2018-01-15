@@ -24,7 +24,7 @@ class GitClone extends AbstractTask
         }
 
         $proc = proc_open(
-            sprintf('git clone --depth=1 %s %s/', $source, $target),
+            sprintf('git clone --depth 1 %s %s/', $source, $target),
             [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
             $pipes,
             $this->cwd
