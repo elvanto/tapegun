@@ -13,7 +13,7 @@ class RenderTemplates extends AbstractTask
      */
     public function run()
     {
-        if (!$source = $this->env->resolve('{{templates:source}}')) {
+        if (!$source = $this->env->get('templates:source')) {
             $this->logError('Missing templates:source environment variable.');
             return false;
         }
@@ -28,6 +28,7 @@ class RenderTemplates extends AbstractTask
         }
 
         foreach ($source as $filename) {
+            $filename = $this->env->resolve($filename);
             $filename = $this->buildPath($filename);
 
             if (!is_file($filename)) {
