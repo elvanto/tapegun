@@ -59,34 +59,14 @@ and tasks required to build a project. The basic structure is as follows.
 
 ### Configuration
 
-__name__
-
-The project name.
-
-__env__
-
-An object mapping environment variable names to values, which can be any data
-type support by JSON.
-
-__targets__
-
-An array of objects defining build targets. Each task defined under __build__
-will be run once per target and inherit __env__ from both the root and target
-configurations.
-
-__pre__
-
-An array of tasks to be run once at the beginning of the build. See __build__
-for more details.
-
-__post__
-
-An array of tasks to be run once at the end of the build. See __build__ for
-more details.
-
-__build__
-
-An array of tasks to be run once per build target.
+| Key | Description |
+| :---: | --- |
+|__name__|The project name.|
+|__env__|An object mapping environment variable names to values, which can be any data type support by JSON.|
+|__targets__|An array of objects defining build targets. Each task defined under __build__ will be run once per target and inherit __env__ from both the root and target configurations.|
+|__pre__|An array of tasks to be run once at the beginning of the build. See __build__ for more details.| 
+|__post__|An array of tasks to be run once at the end of the build. See __build__ for more details.|
+|__build__|An array of tasks to be run once per build target.|
 
 The __command__ property is used to execute a shell command. Environment
 variables surrounded by `{{` and `}}` will be replaced with their corresponding
