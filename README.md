@@ -7,6 +7,14 @@ Features:
 - Multi-target builds with separate environments
 - Bundled tasks for Git, archiving and templated text files
 
+## Installation
+
+The preferred installation method is [composer](https://getcomposer.org);
+
+```sh
+composer require-dev elvanto/tapegun
+```
+
 ## Usage
 
 Tapegun is configured through a JSON file that defines the environment, targets
@@ -81,3 +89,6 @@ must be provided, with `.` used as a delimiter.
 
 Environment variables may be specified on the task, target or root level and
 will be resolved in this order.
+
+## License
+[MIT License](LICENSE)
