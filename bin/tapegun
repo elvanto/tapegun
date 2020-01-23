@@ -10,8 +10,18 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 try {
     $app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
     $app->add(new \Tapegun\Command\Build());
-    $app->run();
+    $run = $app->run();
+
+    if (intval($run) === 0){
+        echo "Operations successful. Exit code was $run";
+    } else {
+        echo "Error Operations failed with exit code $run";
+    }
+    //pass the exit code up the chain
+    exit($run);
 } catch (Exception $e) {
     echo 'Error: ' . $e->getMessage();
-    exit;
+    //exit with an error code
+    exit(2);
 }
+
