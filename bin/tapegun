@@ -18,14 +18,14 @@ try {
     $run = $app->run();
 
     if (intval($run) === 0){
-        echo "\n\n✔️ Operations successful. Exit code was $run";
+        echo "\n\n✔️ Operations successful. Exit code was $run \n";
     } else {
-        echo "\n\n❌ Error Operations failed with exit code $run";
+        echo "\n\n❌ Error Operations failed with exit code $run \n";
     }
     //pass the exit code up the chain
     exit($run);
-} catch (Exception $e) {
-    echo "\n\n❌ Error: " . $e->getMessage();
+} catch (Throwable $e) {
+    echo "\n\n❌ Error: " . $e->getMessage()."\n";
     //exit with an error code
     exit(2);
 }
