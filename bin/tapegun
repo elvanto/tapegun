@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+//only want to see errors once in terminal (logs go to std out in a default php cli setup)
+if (ini_get('log_errors') && ini_get('display_errors') ) {
+    ini_set('log_errors', 0);
+}
+
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once(__DIR__ . '/../vendor/autoload.php');
 } elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
