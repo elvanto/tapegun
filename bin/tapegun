@@ -18,7 +18,7 @@ try {
     $run = $app->run();
 
     if (intval($run) === 0){
-        echo "\n\n✔️ Operations successful. Exit code was $run \n";
+        echo "\n\n✔️ Operations successful.\n";
     } else {
         echo "\n\n❌ Error Operations failed with exit code $run \n";
     }
