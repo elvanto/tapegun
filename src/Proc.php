@@ -38,6 +38,10 @@ class Proc
             $this->pipes,
             $cwd
         );
+
+        foreach ($this->pipes as $pipe) {
+            stream_set_blocking($pipe, false);
+        }
     }
 
     /**
@@ -100,11 +104,18 @@ class Proc
      */
     public function close()
     {
-        foreach ($this->pipes as $pipe) {
-            if ($content = trim(stream_get_contents($pipe))) {
-                $this->output .= $content;
+        do {
+            $status = proc_get_status($this->pd);
+            usleep(5000);
+            foreach ($this->pipes as $pipe) {
+                if ($content = trim(stream_get_contents($pipe))) {
+                    $this->output .= $content;
+                }
             }
-        }
-        return $this->status = proc_close($this->pd);
+        } while($status['running']);
+
+        proc_close($this->pd);
+
+        return $this->status = $status['exitcode'];
     }
 }
