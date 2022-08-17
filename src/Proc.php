@@ -114,6 +114,10 @@ class Proc
             }
         } while($status['running']);
 
+        foreach ($this->pipes as $pipe) {
+            fclose($pipe);
+        }
+
         proc_close($this->pd);
 
         return $this->status = $status['exitcode'];
