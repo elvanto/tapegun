@@ -114,8 +114,9 @@ class Proc
             }
         } while($status['running']);
 
-        foreach ($this->pipes as $pipe) {
+        foreach ($this->pipes as $index => $pipe) {
             fclose($pipe);
+            unset($this->pipes[$index]);
         }
 
         proc_close($this->pd);
