@@ -7,11 +7,15 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once(__DIR__ . '/../../../autoload.php');
 }
 
-try {
-    $app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
-    $app->add(new \Tapegun\Command\Build());
-    $app->run();
-} catch (Exception $e) {
-    echo 'Error: ' . $e->getMessage();
-    exit;
+//Prevent errors being printed to the terminal more than once.
+if (
+    ini_get('log_errors') &&
+    ini_get('display_errors') &&
+    ini_get('error_log') === ""
+) {
+    ini_set('log_errors', '0');
 }
+
+$app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
+$app->add(new \Tapegun\Command\Build());
+$app->run();
