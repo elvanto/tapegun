@@ -7,11 +7,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once(__DIR__ . '/../../../autoload.php');
 }
 
-try {
-    $app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
-    $app->add(new \Tapegun\Command\Build());
-    $app->run();
-} catch (Exception $e) {
-    echo 'Error: ' . $e->getMessage();
-    exit;
-}
+$app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
+$app->setCatchExceptions(false);
+$app->add(new \Tapegun\Command\Build());
+$app->run();
