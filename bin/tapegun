@@ -17,7 +17,22 @@ if (
     ini_set('log_errors', '0');
 }
 
-$app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
-$app->setCatchExceptions(false);
-$app->add(new \Tapegun\Command\Build());
-$app->run();
+//if --debug flag, set error reporting and remove the debug flag before app runs
+if ($debugging = in_array('--debug', $argv)) {
+    //remove from argv since this is not a valid argument for the app.
+    $argv = array_diff($argv, ['--debug']);
+}
+
+try {
+    $app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
+    $app->setCatchExceptions(false);
+    $app->add(new \Tapegun\Command\Build());
+    $app->run();
+} catch (Exception $e) {
+    if ($debugging) {
+        throw $e;
+    } else {
+        echo $e->getMessage() . PHP_EOL;
+        exit(1);
+    }
+}
