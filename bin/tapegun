@@ -17,7 +17,7 @@ if (
     ini_set('log_errors', '0');
 }
 
-//if --debug flag, set error reporting and remove the debug flag before app runs
+//debug option will show errors.
 if ($debugging = in_array('--debug', $argv)) {
     //remove from argv since this is not a valid argument for the app.
     $argv = array_diff($argv, ['--debug']);
