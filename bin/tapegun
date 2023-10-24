@@ -28,7 +28,7 @@ try {
     $app->setCatchExceptions(false);
     $app->add(new \Tapegun\Command\Build());
     $app->run();
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     if ($debugging) {
         throw $e;
     } else {
