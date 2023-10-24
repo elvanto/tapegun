@@ -22,13 +22,8 @@ class Build extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $manager = new Tapegun($input, $output, $this->getHelper('question'));
-            $manager->build(Config::fromFilePath($input->getOption('config')), $input->getOption('target'));
-            return 0;
-        } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
-            return 1;
-        }
+        $manager = new Tapegun($input, $output, $this->getHelper('question'));
+        $manager->build(Config::fromFilePath($input->getOption('config')), $input->getOption('target'));
+        return 0;
     }
 }
