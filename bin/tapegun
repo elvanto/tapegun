@@ -33,6 +33,11 @@ try {
         throw $e;
     } else {
         echo $e->getMessage() . PHP_EOL;
-        exit(1);
+        //allow users Php errors to pass back custom error codes within range.
+        $exitCode = min($e->getCode());
+        if ($exitCode < 1 || $exitCode > 255) {
+            $exitCode = 1;
+        }
+        exit($exitCode);
     }
 }
