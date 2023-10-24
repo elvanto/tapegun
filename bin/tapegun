@@ -32,6 +32,6 @@ try {
     if ($debugging) {
         throw $e;//php will exit with code 255
     }
-    echo $e->getMessage() . PHP_EOL;
+    echo 'Error: ' . $e->getMessage() . PHP_EOL;
     exit(255);
 }
