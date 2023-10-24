@@ -30,14 +30,8 @@ try {
     $app->run();
 } catch (\Throwable $e) {
     if ($debugging) {
-        throw $e;
-    } else {
-        echo $e->getMessage() . PHP_EOL;
-        //allow users Php errors to pass back custom error codes within range.
-        $exitCode = min($e->getCode());
-        if ($exitCode < 1 || $exitCode > 255) {
-            $exitCode = 1;
-        }
-        exit($exitCode);
+        throw $e;//php will exit with code 255
     }
+    echo $e->getMessage() . PHP_EOL;
+    exit(255);
 }
