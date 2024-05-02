@@ -7,11 +7,31 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once(__DIR__ . '/../../../autoload.php');
 }
 
+//Only print errors in terminals once.
+// Default php cli configs use terminal for both log and display which is too noisy.
+if (
+    ini_get('log_errors') &&
+    ini_get('display_errors') &&
+    ini_get('error_log') === ""
+) {
+    ini_set('log_errors', '0');
+}
+
+//debug option will show errors.
+if ($debugging = in_array('--debug', $argv)) {
+    //remove from argv since this is not a valid argument for the app.
+    $argv = array_diff($argv, ['--debug']);
+}
+
 try {
     $app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
+    $app->setCatchExceptions(false);
     $app->add(new \Tapegun\Command\Build());
     $app->run();
-} catch (Exception $e) {
-    echo 'Error: ' . $e->getMessage();
-    exit;
+} catch (\Throwable $e) {
+    if ($debugging) {
+        throw $e;//php will exit with code 255
+    }
+    echo 'Error: ' . $e->getMessage() . PHP_EOL;
+    exit(255);
 }

@@ -72,7 +72,7 @@ class Tapegun
             $this->output->writeln('<comment>======> </comment>' . $task->getDescription());
 
             if (!$task->run()) {
-                return;
+                throw new \Exception("Task failed: " . $task->getDescription());
             }
         }
 
