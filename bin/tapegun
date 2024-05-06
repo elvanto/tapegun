@@ -23,9 +23,9 @@ if (
 }
 
 //debug option will show errors.
-if ($debugging = in_array('--debug', $argv)) {
+if ($showErrors = in_array('--tapegun-show-errors', $argv)) {
     //remove from argv since this is not a valid argument for the app.
-    $input = array_diff($argv, ['--debug']);
+    $input = array_diff($argv, ['--tapegun-show-errors']);
 } else {
     $input = $argv;
 }
@@ -36,7 +36,7 @@ try {
     $app->add(new Build());
     $app->run(new ArgvInput($input));
 } catch (\Throwable $e) {
-    if ($debugging) {
+    if ($showErrors) {
         throw $e;//php will exit with code 255
     }
     echo 'Error: ' . $e->getMessage() . PHP_EOL;
