@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Tapegun\Command\Build;
+use Tapegun\Tapegun;
+
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once(__DIR__ . '/../vendor/autoload.php');
 } elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
@@ -18,18 +23,20 @@ if (
 }
 
 //debug option will show errors.
-if ($debugging = in_array('--debug', $argv)) {
+if ($showErrors = in_array('--tapegun-show-errors', $argv)) {
     //remove from argv since this is not a valid argument for the app.
-    $argv = array_diff($argv, ['--debug']);
+    $input = array_diff($argv, ['--tapegun-show-errors']);
+} else {
+    $input = $argv;
 }
 
 try {
-    $app = new \Symfony\Component\Console\Application('Tapegun', \Tapegun\Tapegun::VERSION);
+    $app = new Application('Tapegun', Tapegun::VERSION);
     $app->setCatchExceptions(false);
-    $app->add(new \Tapegun\Command\Build());
-    $app->run();
+    $app->add(new Build());
+    $app->run(new ArgvInput($input));
 } catch (\Throwable $e) {
-    if ($debugging) {
+    if ($showErrors) {
         throw $e;//php will exit with code 255
     }
     echo 'Error: ' . $e->getMessage() . PHP_EOL;
