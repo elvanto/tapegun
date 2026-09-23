@@ -12,5 +12,8 @@
             "Tapegun\\": "src/"
         }
     },
-    "bin": ["bin/tapegun"]
+    "bin": ["bin/tapegun"],
+    "require-dev": {
+        "vimeo/psalm": "^6.0"
+    }
 }
